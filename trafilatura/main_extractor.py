@@ -357,9 +357,9 @@ def handle_paragraphs(element: _Element, potential_tags: Set[str], options: Extr
 def define_cell_type(is_header: bool) -> _Element:
     "Determine cell element type and mint new element."
     # define tag
-    cell_element = Element("cell")
+    cell_element = Element("td")
     if is_header:
-        cell_element.set("role", "head")
+        cell_element = Element("th")
     return cell_element
 
 
@@ -386,7 +386,7 @@ def handle_table(table_elem: _Element, potential_tags: Set[str], options: Extrac
     seen_header_row = False
     seen_header = False
     span_attr = str(max_cols) if max_cols > 1 else ""
-    newrow = Element("row")
+    newrow = Element("tr")
     if span_attr:
         newrow.set("span", span_attr)
 
@@ -395,7 +395,7 @@ def handle_table(table_elem: _Element, potential_tags: Set[str], options: Extrac
             # process existing row
             if len(newrow) > 0:
                 newtable.append(newrow)
-                newrow = Element("row")
+                newrow = Element("tr")
                 if span_attr:
                     newrow.set("span", span_attr)
                 seen_header_row = seen_header_row or seen_header
@@ -417,7 +417,7 @@ def handle_table(table_elem: _Element, potential_tags: Set[str], options: Extrac
                         # todo: define attributes properly
                         if child.tag in TABLE_ELEMS:
                             # subcell_elem = define_cell_type(is_header)
-                            child.tag = "cell"
+                            child.tag = "td"
                         processed_subchild = handle_textnode(child, options, preserve_spaces=True, comments_fix=True)
                     # todo: lists in table cells
                     elif child.tag == "list" and options.focus == "recall":
@@ -433,8 +433,8 @@ def handle_table(table_elem: _Element, potential_tags: Set[str], options: Extrac
                         define_newelem(processed_subchild, new_child_elem)
                     child.tag = "done"
             # add to tree
-            if new_child_elem.text or len(new_child_elem) > 0:
-                newrow.append(new_child_elem)
+            # if new_child_elem.text or len(new_child_elem) > 0:
+            newrow.append(new_child_elem)
         # beware of nested tables
         elif subelement.tag == "table":
             break
