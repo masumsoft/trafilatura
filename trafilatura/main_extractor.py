@@ -251,12 +251,6 @@ def handle_other_elements(element: _Element, potential_tags: Set[str], options: 
     if element.tag == "div" and "w3-code" in element.get("class", ""):
         return handle_code_blocks(element)
 
-    # delete unwanted
-    if element.tag not in potential_tags:
-        if element.tag != "done":
-            _log_event("discarding element", element.tag, element.text)
-        return None
-
     if element.tag == "div":
         # make a copy and prune it in case it contains sub-elements handled on their own?
         # divcopy = deepcopy(element)
@@ -268,6 +262,12 @@ def handle_other_elements(element: _Element, potential_tags: Set[str], options: 
                 processed_element.tag = "p"
             # insert
             return processed_element
+        
+    # delete unwanted
+    if element.tag not in potential_tags:
+        if element.tag != "done":
+            _log_event("discarding element", element.tag, element.text)
+        return None
 
     return None
 
