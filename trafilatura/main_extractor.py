@@ -133,6 +133,10 @@ def process_nested_elements(child: _Element, new_child_elem: _Element, options: 
             processed_subchild = handle_lists(subelem, options)
             if processed_subchild is not None:
                 new_child_elem.append(processed_subchild)
+        elif subelem.tag == "table":
+            processed_subchild = handle_table(subelem, TAG_CATALOG, options)
+            if processed_subchild is not None:
+                new_child_elem.append(processed_subchild)
         else:
             processed_subchild = handle_textnode(subelem, options, comments_fix=False)
             if processed_subchild is not None:
